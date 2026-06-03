@@ -43,6 +43,26 @@ sudo apt install ./ugreen-dxp-leds-dkms_latest.deb
 
 The package registers the module with DKMS and configures `i2c-dev`,
 `led-ugreen`, `ledtrig-oneshot`, and `ledtrig-netdev` to load at boot.
+It also installs a systemd oneshot service that binds the `led-ugreen` driver
+to the LED controller at I2C address `0x3a`.
+
+If the module is loaded but `/sys/class/leds/disk1` does not exist, the I2C
+device has probably not been created yet. Run the helper manually:
+
+```sh
+sudo /usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen
+ls /sys/class/leds
+```
+
+If the helper tries the wrong bus, list adapters and force the correct bus:
+
+```sh
+i2cdetect -l
+echo I2C_BUS=1 | sudo tee /etc/default/ugreen-dxp-leds-dkms
+sudo /usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen
+```
+
+Replace `1` with the bus number that owns the LED controller.
 
 ## Build
 

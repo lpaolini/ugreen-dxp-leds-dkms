@@ -479,6 +479,7 @@ static int ugreen_led_probe(struct i2c_client *client) {
     pr_info ("i2c probed");
 
     struct ugreen_led_array *priv;
+    int detected_leds = 0;
     
     priv = devm_kzalloc(&client->dev, sizeof(struct ugreen_led_array), GFP_KERNEL);
     if (!priv) {
@@ -499,6 +500,7 @@ static int ugreen_led_probe(struct i2c_client *client) {
 
         struct ugreen_led_state *state = priv->state + i;
         if (state->status != UGREEN_LED_STATE_INVALID) {
+            detected_leds++;
 
             pr_info("probed led id %d, status %d, rgb 0x%02x%02x%02x, "
                     "brightness %d, t_on %d, t_cycle %d\n", i, 
@@ -509,6 +511,12 @@ static int ugreen_led_probe(struct i2c_client *client) {
             ugreen_led_set_color_unlock(priv, i, 0xff, 0xff, 0xff);
 
         }
+    }
+
+    if (!detected_leds) {
+        pr_err("no LEDs detected at i2c address 0x%02x\n", client->addr);
+        mutex_destroy(&priv->mutex);
+        return -ENODEV;
     }
 
     i2c_set_clientdata(client, priv);
