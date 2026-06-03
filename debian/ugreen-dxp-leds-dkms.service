@@ -1,0 +1,11 @@
+[Unit]
+Description=Bind UGREEN LED I2C controller
+After=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

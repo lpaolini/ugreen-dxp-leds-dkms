@@ -27,7 +27,9 @@ direct download.
 Install from the Debian repository:
 
 ```sh
-echo 'deb [trusted=yes] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
+sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
 sudo apt update
 sudo apt install ugreen-dxp-leds-dkms
 ```
@@ -61,3 +63,18 @@ dpkg-buildpackage -b -us -uc -tc
 
 The resulting `ugreen-dxp-leds-dkms_*.deb` package is written to the parent
 directory by `dpkg-buildpackage`.
+
+## Repository signing
+
+The GitHub Pages Debian repository is signed during the publishing workflow.
+Configure these repository secrets before running the workflow:
+
+- `APT_SIGNING_KEY`: ASCII-armored private OpenPGP key used to sign the APT
+  `Release` metadata.
+- `APT_SIGNING_KEY_PASSPHRASE`: passphrase for that key, if it has one.
+
+The workflow publishes the matching public key at:
+
+```text
+https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key
+```

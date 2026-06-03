@@ -2,12 +2,12 @@ name: Publish Debian repository
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -33,14 +33,30 @@ jobs:
             dh-dkms \
             dkms \
             dpkg-dev \
-            fakeroot
+            fakeroot \
+            gnupg
 
       - name: Build Debian package
         run: dpkg-buildpackage -b -us -uc -tc
 
+      - name: Upload Debian package to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ../ugreen-dxp-leds-dkms_*.deb
+          generate_release_notes: true
+
       - name: Build APT repository
+        env:
+          APT_SIGNING_KEY: ${{ secrets.APT_SIGNING_KEY }}
+          APT_SIGNING_KEY_PASSPHRASE: ${{ secrets.APT_SIGNING_KEY_PASSPHRASE }}
         run: |
-          set -eux
+          set -eu
+
+          if [ -z "${APT_SIGNING_KEY:-}" ]; then
+            echo "APT_SIGNING_KEY secret is required to sign the Debian repository." >&2
+            exit 1
+          fi
 
           repo_root="$PWD/public/debian"
           suite="stable"
@@ -80,6 +96,31 @@ jobs:
             > "$repo_root/dists/$suite/Release"
           rm "$repo_root/apt-release.conf"
 
+          export GNUPGHOME="$PWD/.gnupg"
+          mkdir -p "$GNUPGHOME"
+          chmod 700 "$GNUPGHOME"
+          printf '%s' "$APT_SIGNING_KEY" | gpg --batch --import
+
+          signing_key="$(gpg --batch --list-secret-keys --with-colons | awk -F: '/^fpr:/ { print $10; exit }')"
+          if [ -z "$signing_key" ]; then
+            echo "No secret signing key was imported from APT_SIGNING_KEY." >&2
+            exit 1
+          fi
+
+          gpg --batch --armor --export "$signing_key" > "$repo_root/public.key"
+
+          gpg_args=(--batch --yes --local-user "$signing_key")
+          if [ -n "${APT_SIGNING_KEY_PASSPHRASE:-}" ]; then
+            gpg_args+=(--pinentry-mode loopback --passphrase "$APT_SIGNING_KEY_PASSPHRASE")
+          fi
+
+          gpg "${gpg_args[@]}" --armor --detach-sign \
+            --output "$repo_root/dists/$suite/Release.gpg" \
+            "$repo_root/dists/$suite/Release"
+          gpg "${gpg_args[@]}" --clearsign \
+            --output "$repo_root/dists/$suite/InRelease" \
+            "$repo_root/dists/$suite/Release"
+
           cat > "$PWD/public/index.html" <<'EOF'
           <!doctype html>
           <html lang="en">
@@ -111,7 +152,9 @@ jobs:
             <body>
               <h1>UGREEN LED DKMS Debian Repository</h1>
               <p>Install the DKMS package from this GitHub Pages APT repository:</p>
-              <pre><code>echo 'deb [trusted=yes] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
+              <pre><code>sudo install -d -m 0755 /etc/apt/keyrings
+          curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg
+          echo 'deb [signed-by=/etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
           sudo apt update
           sudo apt install ugreen-dxp-leds-dkms</code></pre>
               <p>Or download the latest .deb package directly:</p>

@@ -19,4 +19,8 @@ fi
 
 #DEBHELPER#
 
+if [ "$1" = "configure" ] && [ -x /usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen ]; then
+    /usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen || true
+fi
+
 exit 0

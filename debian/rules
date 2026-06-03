@@ -9,6 +9,7 @@ override_dh_install:
 	dh_install ugreen-dxp-leds.c usr/src/led-ugreen-$(DEB_VERSION_UPSTREAM)/
 	dh_install ugreen-dxp-leds.h usr/src/led-ugreen-$(DEB_VERSION_UPSTREAM)/
 	dh_install Makefile usr/src/led-ugreen-$(DEB_VERSION_UPSTREAM)/
+	dh_install debian/probe-led-ugreen usr/lib/ugreen-dxp-leds-dkms/
 
 override_dh_dkms:
 	dh_dkms -V $(DEB_VERSION_UPSTREAM)
