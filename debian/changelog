@@ -1,12 +1,17 @@
+ugreen-dxp-leds-dkms (0.3-2) stable; urgency=medium
+
+  * Bind the LED controller I2C device from the DKMS package.
+  * Install a systemd oneshot service and helper script for boot-time probing.
+  * Document manual recovery when the module is loaded but LEDs are missing.
+
+ -- Yuhao Zhou <miskcoo@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+
 ugreen-dxp-leds-dkms (0.3-1) unstable; urgency=medium
 
   * Refactor to proper dh-dkms packaging
   * Fix version consistency (0.3)
   * Use debhelper for automated builds
   * Change architecture to 'all' (source-only)
-  * Bind the LED controller I2C device from the DKMS package.
-  * Install a systemd oneshot service and helper script for boot-time probing.
-  * Document manual recovery when the module is loaded but LEDs are missing.
 
  -- Yuhao Zhou <miskcoo@gmail.com>  Tue, 29 Oct 2025 12:00:00 +0000
 
