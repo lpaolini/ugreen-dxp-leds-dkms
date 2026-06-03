@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+# Create module autoload configuration
+if [ "$1" = "configure" ] && [ ! -e /etc/modules-load.d/led-ugreen.conf ]; then
+    cat > /etc/modules-load.d/led-ugreen.conf << 'EOFINNER'
+# UGREEN LED driver modules
+i2c-dev
+led-ugreen
+ledtrig-oneshot
+ledtrig-netdev
+EOFINNER
+
+    echo "UGREEN LED kernel module configured for autoload."
+    echo "Module will load automatically on next boot, or run: modprobe led-ugreen"
+elif [ "$1" = "configure" ]; then
+    echo "UGREEN LED kernel module autoload configuration already exists."
+fi
+
+#DEBHELPER#
+
+exit 0

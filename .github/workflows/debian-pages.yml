@@ -1,0 +1,142 @@
+name: Publish Debian repository
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            apt-utils \
+            build-essential \
+            debhelper \
+            dh-dkms \
+            dkms \
+            dpkg-dev \
+            fakeroot
+
+      - name: Build Debian package
+        run: dpkg-buildpackage -b -us -uc -tc
+
+      - name: Build APT repository
+        run: |
+          set -eux
+
+          repo_root="$PWD/public/debian"
+          suite="stable"
+          component="main"
+          package_dir="$repo_root/pool/$component/u/ugreen-dxp-leds-dkms"
+          download_dir="$PWD/public/downloads"
+          architectures="amd64 arm64 all"
+          deb_file="$(ls ../ugreen-dxp-leds-dkms_*.deb | head -n 1)"
+
+          mkdir -p "$package_dir" "$download_dir"
+          cp "$deb_file" "$package_dir/"
+          cp "$deb_file" "$download_dir/ugreen-dxp-leds-dkms_latest.deb"
+
+          for arch in $architectures; do
+            binary_dir="$repo_root/dists/$suite/$component/binary-$arch"
+            mkdir -p "$binary_dir"
+            (
+              cd "$repo_root"
+              apt-ftparchive packages "pool/$component/u/ugreen-dxp-leds-dkms"
+            ) > "$binary_dir/Packages"
+            gzip -9c "$binary_dir/Packages" > "$binary_dir/Packages.gz"
+          done
+
+          cat > "$repo_root/apt-release.conf" <<EOF
+          APT::FTPArchive::Release {
+            Origin "ugreen-leds-controller";
+            Label "UGREEN LED DKMS";
+            Suite "$suite";
+            Codename "$suite";
+            Architectures "$architectures";
+            Components "$component";
+            Description "UGREEN NAS LED DKMS packages";
+          };
+          EOF
+
+          apt-ftparchive -c "$repo_root/apt-release.conf" release "$repo_root/dists/$suite" \
+            > "$repo_root/dists/$suite/Release"
+          rm "$repo_root/apt-release.conf"
+
+          cat > "$PWD/public/index.html" <<'EOF'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>UGREEN LED DKMS Debian Repository</title>
+              <style>
+                body {
+                  max-width: 820px;
+                  margin: 3rem auto;
+                  padding: 0 1.25rem;
+                  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                  line-height: 1.55;
+                  color: #17202a;
+                }
+                code, pre {
+                  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+                }
+                pre {
+                  overflow-x: auto;
+                  padding: 1rem;
+                  border: 1px solid #d7dde5;
+                  border-radius: 6px;
+                  background: #f7f9fb;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>UGREEN LED DKMS Debian Repository</h1>
+              <p>Install the DKMS package from this GitHub Pages APT repository:</p>
+              <pre><code>echo 'deb [trusted=yes] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
+          sudo apt update
+          sudo apt install ugreen-dxp-leds-dkms</code></pre>
+              <p>Or download the latest .deb package directly:</p>
+              <p><a href="downloads/ugreen-dxp-leds-dkms_latest.deb">ugreen-dxp-leds-dkms_latest.deb</a></p>
+            </body>
+          </html>
+          EOF
+          touch "$PWD/public/.nojekyll"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
