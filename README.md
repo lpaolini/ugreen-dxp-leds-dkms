@@ -1,5 +1,11 @@
 # UGREEN DXP LED kernel module
 
+This DKMS package provides the `led-ugreen` Linux kernel module for UGREEN DXP
+NAS systems whose front-panel LEDs are controlled by the onboard I2C LED
+controller. It exposes those LEDs through the standard Linux LED subsystem, so
+they appear under `/sys/class/leds` and can use kernel LED triggers such as
+`netdev` and `oneshot`.
+
 This repository is based on a fork of
 [miskcoo/ugreen_leds_controller](https://github.com/miskcoo/ugreen_leds_controller).
 
