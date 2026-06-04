@@ -96,12 +96,12 @@ jobs:
           cat > "$repo_root/apt-release.conf" <<EOF
           APT::FTPArchive::Release {
             Origin "ugreen-leds-controller";
-            Label "UGREEN LED DKMS";
+            Label "UGREEN DXP LED DKMS";
             Suite "$suite";
             Codename "$suite";
             Architectures "$architectures";
             Components "$component";
-            Description "UGREEN NAS LED DKMS packages";
+            Description "UGREEN DXP LED kernel module packages";
           };
           EOF
 
@@ -140,7 +140,7 @@ jobs:
             <head>
               <meta charset="utf-8">
               <meta name="viewport" content="width=device-width, initial-scale=1">
-              <title>UGREEN LED DKMS Debian Repository</title>
+              <title>UGREEN DXP LED Kernel Module Debian Repository</title>
               <style>
                 body {
                   max-width: 820px;
@@ -163,7 +163,7 @@ jobs:
               </style>
             </head>
             <body>
-              <h1>UGREEN LED DKMS Debian Repository</h1>
+              <h1>UGREEN DXP LED Kernel Module Debian Repository</h1>
               <p>Install the DKMS package from this GitHub Pages APT repository:</p>
               <pre><code>sudo install -d -m 0755 /etc/apt/keyrings
           curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg

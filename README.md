@@ -1,9 +1,10 @@
-# UGREEN DXP LEDs DKMS package
+# UGREEN DXP LED kernel module
 
-This repository is a fork of
+This repository is based on a fork of
 [miskcoo/ugreen_leds_controller](https://github.com/miskcoo/ugreen_leds_controller).
+
 It has been intentionally reduced to only the `led-ugreen` DKMS kernel module
-and reorganized as a Debian package source tree.
+and reorganized as a standard Debian package source tree.
 
 The original project includes the reverse-engineered LED protocol, CLI tools,
 systemd helper scripts, packaging experiments, and platform-specific build
@@ -30,8 +31,11 @@ Install from the Debian repository:
 
 ```sh
 sudo install -d -m 0755 /etc/apt/keyrings
+
 curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg
+
 echo 'deb [signed-by=/etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
+
 sudo apt update
 sudo apt install ugreen-dxp-leds-dkms
 ```
@@ -40,6 +44,7 @@ Or download and install the latest `.deb` directly:
 
 ```sh
 curl -LO https://lpaolini.github.io/ugreen-dxp-leds-dkms/downloads/ugreen-dxp-leds-dkms_latest.deb
+
 sudo apt install ./ugreen-dxp-leds-dkms_latest.deb
 ```
 

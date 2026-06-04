@@ -5,6 +5,7 @@ ugreen-dxp-leds-dkms (0.3.6) stable; urgency=medium
   * Fix source package versioning for the native package format.
   * Improve LED class device names and sysfs output helpers.
   * Fix initial LED brightness state and cleanup on partial probe failure.
+  * Align human-facing names on UGREEN DXP LED kernel module.
 
  -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 09:10:00 +0200
 

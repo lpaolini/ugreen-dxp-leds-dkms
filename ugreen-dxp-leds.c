@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 /*
- *     UGREEN NAS LED driver.
+ *     UGREEN DXP LED kernel module.
  *
  *	Copyright (C) 2024.
  *	Author: Yuhao Zhou <miskcoo@gmail.com>
@@ -675,5 +675,5 @@ module_exit(ugreen_led_exit);
 
 // Module metadata
 MODULE_AUTHOR("Yuhao Zhou <miskcoo@gmail.com>");
-MODULE_DESCRIPTION("UGREEN NAS LED driver");
+MODULE_DESCRIPTION("UGREEN DXP LED kernel module");
 MODULE_LICENSE("GPL v2");
