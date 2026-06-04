@@ -6,18 +6,13 @@
  *	Author: Yuhao Zhou <miskcoo@gmail.com>
  */
 
-#include "linux/stddef.h"
 #include <linux/init.h>
 #include <linux/version.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/uaccess.h>
-#include <linux/fs.h>
 #include <linux/delay.h>
 #include <linux/leds.h>
-#include <linux/proc_fs.h>
 #include <linux/i2c.h>
-#include <linux/i2c-dev.h>
 #include "ugreen-dxp-leds.h"
 
 #ifdef pr_fmt

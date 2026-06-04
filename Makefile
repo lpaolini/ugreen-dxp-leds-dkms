@@ -1,4 +1,3 @@
-TARGET = led-ugreen
 obj-m += led-ugreen.o
 led-ugreen-y := ugreen-dxp-leds.o
 ccflags-y := -std=gnu11

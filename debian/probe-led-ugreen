@@ -36,7 +36,7 @@ find_i2c_dev() {
     done
 }
 
-bind_i2c_dev() {
+set_i2c_paths() {
     i2c_dev="$1"
     bus="${i2c_dev#i2c-}"
     adapter="/sys/bus/i2c/devices/${i2c_dev}"
@@ -46,6 +46,10 @@ bind_i2c_dev() {
         echo "I2C adapter ${i2c_dev} does not exist" >&2
         return 1
     fi
+}
+
+bind_i2c_dev() {
+    set_i2c_paths "$1" || return 1
 
     if [ -d "$device" ]; then
         name="$(cat "$device/name")"
@@ -62,15 +66,7 @@ bind_i2c_dev() {
 }
 
 unbind_i2c_dev() {
-    i2c_dev="$1"
-    bus="${i2c_dev#i2c-}"
-    adapter="/sys/bus/i2c/devices/${i2c_dev}"
-    device="${adapter}/${bus}-${I2C_ADDR_DIR}"
-
-    if [ ! -d "$adapter" ]; then
-        echo "I2C adapter ${i2c_dev} does not exist" >&2
-        return 1
-    fi
+    set_i2c_paths "$1" || return 1
 
     if [ ! -d "$device" ]; then
         echo "${MODULE_NAME} is not registered on ${i2c_dev}"
