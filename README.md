@@ -91,18 +91,3 @@ dpkg-buildpackage -b -us -uc -tc
 
 The resulting `ugreen-dxp-leds-dkms_*.deb` package is written to the parent
 directory by `dpkg-buildpackage`.
-
-## Repository signing
-
-The GitHub Pages Debian repository is signed during the publishing workflow.
-Configure these repository secrets before running the workflow:
-
-- `APT_SIGNING_KEY`: ASCII-armored private OpenPGP key used to sign the APT
-  `Release` metadata.
-- `APT_SIGNING_KEY_PASSPHRASE`: passphrase for that key, if it has one.
-
-The workflow publishes the matching public key at:
-
-```text
-https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key
-```
