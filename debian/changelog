@@ -3,21 +3,21 @@ ugreen-dxp-leds-dkms (0.3-5) stable; urgency=medium
   * Keep repeated LED I2C binding attempts quiet when the client already
     exists.
 
- -- Yuhao Zhou <miskcoo@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
 
 ugreen-dxp-leds-dkms (0.3-4) stable; urgency=medium
 
   * Unbind the LED I2C client during package removal.
   * Remove the optional I2C bus override file on purge.
 
- -- Yuhao Zhou <miskcoo@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
 
 ugreen-dxp-leds-dkms (0.3-3) stable; urgency=medium
 
   * Fail driver probe when no LEDs are detected on an I2C client.
   * Improve I2C binding diagnostics and support an explicit I2C_BUS override.
 
- -- Yuhao Zhou <miskcoo@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
 
 ugreen-dxp-leds-dkms (0.3-2) stable; urgency=medium
 
@@ -25,7 +25,7 @@ ugreen-dxp-leds-dkms (0.3-2) stable; urgency=medium
   * Install a systemd oneshot service and helper script for boot-time probing.
   * Document manual recovery when the module is loaded but LEDs are missing.
 
- -- Yuhao Zhou <miskcoo@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
 
 ugreen-dxp-leds-dkms (0.3-1) unstable; urgency=medium
 
@@ -34,7 +34,7 @@ ugreen-dxp-leds-dkms (0.3-1) unstable; urgency=medium
   * Use debhelper for automated builds
   * Change architecture to 'all' (source-only)
 
- -- Yuhao Zhou <miskcoo@gmail.com>  Tue, 29 Oct 2025 12:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
 
 ugreen-dxp-leds-dkms (0.3-0) unstable; urgency=medium
 
