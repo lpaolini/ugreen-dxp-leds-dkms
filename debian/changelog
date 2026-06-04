@@ -1,3 +1,10 @@
+ugreen-dxp-leds-dkms (0.3-5) stable; urgency=medium
+
+  * Keep repeated LED I2C binding attempts quiet when the client already
+    exists.
+
+ -- Yuhao Zhou <miskcoo@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+
 ugreen-dxp-leds-dkms (0.3-4) stable; urgency=medium
 
   * Unbind the LED I2C client during package removal.

@@ -49,7 +49,6 @@ bind_i2c_dev() {
     if [ -d "$device" ]; then
         name="$(cat "$device/name")"
         if [ "$name" = "$MODULE_NAME" ]; then
-            echo "${MODULE_NAME} already exists on ${i2c_dev}"
             return 0
         fi
 
