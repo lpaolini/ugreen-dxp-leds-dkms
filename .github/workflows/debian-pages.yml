@@ -50,7 +50,7 @@ jobs:
             debian/ugreen-dxp-leds-dkms.postinst \
             debian/ugreen-dxp-leds-dkms.prerm \
             debian/ugreen-dxp-leds-dkms.postrm
-          lintian -EvIL +pedantic ../ugreen-dxp-leds-dkms_*.changes
+          lintian --profile debian -EvIL +pedantic ../ugreen-dxp-leds-dkms_*.changes
 
       - name: Upload Debian package to GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
