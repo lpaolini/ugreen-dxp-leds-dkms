@@ -5,6 +5,7 @@ MODULE_NAME="led-ugreen"
 I2C_ADDR="0x3a"
 I2C_ADDR_DIR="003a"
 DEFAULTS="/etc/default/ugreen-dxp-leds-dkms"
+ACTION="${1:-bind}"
 
 if [ -r "$DEFAULTS" ]; then
     . "$DEFAULTS"
@@ -60,6 +61,32 @@ bind_i2c_dev() {
     echo "Bound ${MODULE_NAME} at ${I2C_ADDR} on ${i2c_dev}"
 }
 
+unbind_i2c_dev() {
+    i2c_dev="$1"
+    bus="${i2c_dev#i2c-}"
+    adapter="/sys/bus/i2c/devices/${i2c_dev}"
+    device="${adapter}/${bus}-${I2C_ADDR_DIR}"
+
+    if [ ! -d "$adapter" ]; then
+        echo "I2C adapter ${i2c_dev} does not exist" >&2
+        return 1
+    fi
+
+    if [ ! -d "$device" ]; then
+        echo "${MODULE_NAME} is not registered on ${i2c_dev}"
+        return 0
+    fi
+
+    name="$(cat "$device/name")"
+    if [ "$name" != "$MODULE_NAME" ]; then
+        echo "ERROR: ${bus}-${I2C_ADDR_DIR} is registered as ${name}, not ${MODULE_NAME}" >&2
+        return 1
+    fi
+
+    echo "$I2C_ADDR" > "${adapter}/delete_device"
+    echo "Unbound ${MODULE_NAME} at ${I2C_ADDR} from ${i2c_dev}"
+}
+
 i2c_dev="$(find_i2c_dev)"
 
 if [ -z "$i2c_dev" ]; then
@@ -68,4 +95,15 @@ if [ -z "$i2c_dev" ]; then
     exit 1
 fi
 
-bind_i2c_dev "$i2c_dev"
+case "$ACTION" in
+    bind)
+        bind_i2c_dev "$i2c_dev"
+        ;;
+    unbind)
+        unbind_i2c_dev "$i2c_dev"
+        ;;
+    *)
+        echo "Usage: $0 [bind|unbind]" >&2
+        exit 2
+        ;;
+esac

@@ -4,6 +4,7 @@ set -e
 # Remove module autoload configuration on purge
 if [ "$1" = "purge" ]; then
     rm -f /etc/modules-load.d/led-ugreen.conf
+    rm -f /etc/default/ugreen-dxp-leds-dkms
 fi
 
 #DEBHELPER#
