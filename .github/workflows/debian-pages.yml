@@ -34,10 +34,23 @@ jobs:
             dkms \
             dpkg-dev \
             fakeroot \
-            gnupg
+            gnupg \
+            lintian \
+            shellcheck
+
+      - name: Build Debian source package
+        run: dpkg-buildpackage -S -us -uc -tc
 
       - name: Build Debian package
         run: dpkg-buildpackage -b -us -uc -tc
+
+      - name: Run package checks
+        run: |
+          shellcheck debian/probe-led-ugreen \
+            debian/ugreen-dxp-leds-dkms.postinst \
+            debian/ugreen-dxp-leds-dkms.prerm \
+            debian/ugreen-dxp-leds-dkms.postrm
+          lintian -EvIL +pedantic ../ugreen-dxp-leds-dkms_*.changes
 
       - name: Upload Debian package to GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')

@@ -1,10 +1,11 @@
 [Unit]
 Description=Bind UGREEN LED I2C controller
+Documentation=https://github.com/lpaolini/ugreen-dxp-leds-dkms
 After=systemd-modules-load.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen
+ExecStart=/usr/libexec/ugreen-dxp-leds-dkms/probe-led-ugreen
 RemainAfterExit=yes
 
 [Install]

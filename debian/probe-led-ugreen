@@ -8,6 +8,7 @@ DEFAULTS="/etc/default/ugreen-dxp-leds-dkms"
 ACTION="${1:-bind}"
 
 if [ -r "$DEFAULTS" ]; then
+    # shellcheck source=/dev/null
     . "$DEFAULTS"
 fi
 

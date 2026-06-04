@@ -10,6 +10,7 @@
 #include <linux/init.h>
 #include <linux/version.h>
 #include <linux/module.h>
+#include <linux/kernel.h>
 #include <linux/uaccess.h>
 #include <linux/fs.h>
 #include <linux/delay.h>
@@ -23,6 +24,35 @@
 #undef pr_fmt
 #endif
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,10,0)
+static ssize_t sysfs_emit(char *buf, const char *fmt, ...)
+{
+    va_list args;
+    ssize_t len;
+
+    va_start(args, fmt);
+    len = vscnprintf(buf, PAGE_SIZE, fmt, args);
+    va_end(args);
+
+    return len;
+}
+
+static ssize_t sysfs_emit_at(char *buf, ssize_t at, const char *fmt, ...)
+{
+    va_list args;
+    ssize_t len;
+
+    if (at >= PAGE_SIZE)
+        return 0;
+
+    va_start(args, fmt);
+    len = vscnprintf(buf + at, PAGE_SIZE - at, fmt, args);
+    va_end(args);
+
+    return len;
+}
+#endif
 
 static bool verbose = false;
 module_param(verbose, bool, 0644);
@@ -357,7 +387,7 @@ static ssize_t color_show(struct device *dev, struct device_attribute *attr, cha
 
     struct led_classdev *cdev = dev_get_drvdata(dev);
     struct ugreen_led_state *state = lcdev_to_ugreen_led_state(cdev);
-    return sprintf(buf, "%d %d %d\n", state->r, state->g, state->b);
+    return sysfs_emit(buf, "%d %d %d\n", state->r, state->g, state->b);
 }
 
 static DEVICE_ATTR_RW(color);
@@ -417,18 +447,18 @@ static ssize_t blink_type_show(struct device *dev, struct device_attribute *attr
     mutex_unlock(&state->priv->mutex);
 
     if (status == UGREEN_LED_STATE_BLINK) {
-        size += sprintf(buf, "none [blink] breath\n");
+        size += sysfs_emit_at(buf, size, "none [blink] breath\n");
     } else if (status == UGREEN_LED_STATE_BREATH) {
-        size += sprintf(buf, "none blink [breath]\n");
+        size += sysfs_emit_at(buf, size, "none blink [breath]\n");
     } else {
-        size += sprintf(buf, "[none] blink breath\n");
+        size += sysfs_emit_at(buf, size, "[none] blink breath\n");
     }
 
     if (status == UGREEN_LED_STATE_BLINK || status == UGREEN_LED_STATE_BREATH) {
-        size += sprintf(buf + size, "delay_on: %d, delay_off: %d\n", delay_on, delay_off);
+        size += sysfs_emit_at(buf, size, "delay_on: %d, delay_off: %d\n", delay_on, delay_off);
     }
 
-    size += sprintf(buf + size, "\nUsage: write \"blink <delay_on> <delay_off>\" to change the state.\n");
+    size += sysfs_emit_at(buf, size, "\nUsage: write \"blink <delay_on> <delay_off>\" to change the state.\n");
 
     return size;
 }
@@ -457,7 +487,7 @@ static ssize_t status_show(struct device *dev, struct device_attribute *attr, ch
     t_cycle = state->t_cycle;
     mutex_unlock(&state->priv->mutex);
 
-    return sprintf(buf, "%s %d %d %d %d %d %d\n", 
+    return sysfs_emit(buf, "%s %d %d %d %d %d %d\n",
             ugreen_led_state_name[status], (int)brightness, 
             (int)r, (int)g, (int)b,
             (int)t_on, (int)(t_cycle - t_on));
@@ -523,7 +553,16 @@ static int ugreen_led_probe(struct i2c_client *client) {
 
     // register leds class devices
     const char *led_name[] = {
-        "power", "netdev", "disk1", "disk2", "disk3", "disk4", "disk5", "disk6", "disk7", "disk8"
+        "ugreen:white:power",
+        "ugreen:white:netdev",
+        "ugreen:white:disk1",
+        "ugreen:white:disk2",
+        "ugreen:white:disk3",
+        "ugreen:white:disk4",
+        "ugreen:white:disk5",
+        "ugreen:white:disk6",
+        "ugreen:white:disk7",
+        "ugreen:white:disk8",
     };
 
     for (int i = 0; i < UGREEN_MAX_LED_NUMBER; ++i) {
@@ -535,9 +574,9 @@ static int ugreen_led_probe(struct i2c_client *client) {
         // register the brightness control
         if (i < ARRAY_SIZE(led_name))
             state->cdev.name = led_name[i];
-        else state->cdev.name = "unknown";
+        else state->cdev.name = "ugreen:white:unknown";
 
-        state->cdev.brightness = state->cdev.brightness;
+        state->cdev.brightness = state->brightness;
         state->cdev.max_brightness = 0xff;
         state->cdev.brightness_set_blocking = ugreen_led_set_brightness_blocking;
         state->cdev.brightness_get = ugreen_led_get_brightness;
@@ -560,6 +599,7 @@ static int ugreen_led_probe(struct i2c_client *client) {
                     state->registered = false;
                 }
             }
+            mutex_destroy(&priv->mutex);
             return rc;
         }
         state->registered = true;

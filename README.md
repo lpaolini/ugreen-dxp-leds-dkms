@@ -13,8 +13,10 @@ DKMS package `ugreen-dxp-leds-dkms`.
 The branch layout is designed for a GitHub Pages Debian repository:
 
 - `debian/` contains the Debian packaging metadata.
-- `ugreen-dxp-leds.c`, `ugreen-dxp-leds.h`, `Makefile`, and `dkms.conf` are the DKMS
-  module source installed under `/usr/src`.
+- `ugreen-dxp-leds.c`, `ugreen-dxp-leds.h`, and `Makefile` are the module
+  source installed under `/usr/src`.
+- `debian/ugreen-dxp-leds-dkms.dkms` is the DKMS configuration template used by
+  `dh-dkms`.
 - `.github/workflows/debian-pages.yml` builds the `.deb`, generates the APT
   repository metadata, and publishes it through GitHub Pages.
 
@@ -46,11 +48,12 @@ The package registers the module with DKMS and configures `i2c-dev`,
 It also installs a systemd oneshot service that binds the `led-ugreen` driver
 to the LED controller at I2C address `0x3a`.
 
-If the module is loaded but `/sys/class/leds/disk1` does not exist, the I2C
-device has probably not been created yet. Run the helper manually:
+If the module is loaded but `/sys/class/leds/ugreen:white:disk1` does not
+exist, the I2C device has probably not been created yet. Run the helper
+manually:
 
 ```sh
-sudo /usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen
+sudo /usr/libexec/ugreen-dxp-leds-dkms/probe-led-ugreen
 ls /sys/class/leds
 ```
 
@@ -59,7 +62,7 @@ If the helper tries the wrong bus, list adapters and force the correct bus:
 ```sh
 i2cdetect -l
 echo I2C_BUS=1 | sudo tee /etc/default/ugreen-dxp-leds-dkms
-sudo /usr/lib/ugreen-dxp-leds-dkms/probe-led-ugreen
+sudo /usr/libexec/ugreen-dxp-leds-dkms/probe-led-ugreen
 ```
 
 Replace `1` with the bus number that owns the LED controller.

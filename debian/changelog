@@ -1,42 +1,52 @@
-ugreen-dxp-leds-dkms (0.3-5) stable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.6) stable; urgency=medium
+
+  * Add Debian copyright metadata and package-maintainer VCS metadata.
+  * Keep module autoload configuration as a dpkg-managed conffile.
+  * Fix source package versioning for the native package format.
+  * Improve LED class device names and sysfs output helpers.
+  * Fix initial LED brightness state and cleanup on partial probe failure.
+
+ -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 09:10:00 +0200
+
+ugreen-dxp-leds-dkms (0.3.5) stable; urgency=medium
 
   * Keep repeated LED I2C binding attempts quiet when the client already
     exists.
 
- -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 09:00:00 +0200
 
-ugreen-dxp-leds-dkms (0.3-4) stable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.4) stable; urgency=medium
 
   * Unbind the LED I2C client during package removal.
   * Remove the optional I2C bus override file on purge.
 
- -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Wed, 03 Jun 2026 21:00:00 +0200
 
-ugreen-dxp-leds-dkms (0.3-3) stable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.3) stable; urgency=medium
 
   * Fail driver probe when no LEDs are detected on an I2C client.
   * Improve I2C binding diagnostics and support an explicit I2C_BUS override.
 
- -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Wed, 03 Jun 2026 18:00:00 +0200
 
-ugreen-dxp-leds-dkms (0.3-2) stable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.2) stable; urgency=medium
 
   * Bind the LED controller I2C device from the DKMS package.
   * Install a systemd oneshot service and helper script for boot-time probing.
   * Document manual recovery when the module is loaded but LEDs are missing.
 
- -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Wed, 03 Jun 2026 15:00:00 +0200
 
-ugreen-dxp-leds-dkms (0.3-1) unstable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.1) unstable; urgency=medium
 
   * Refactor to proper dh-dkms packaging
   * Fix version consistency (0.3)
   * Use debhelper for automated builds
   * Change architecture to 'all' (source-only)
 
- -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 00:00:00 +0000
+ -- Luca Paolini <lookap@gmail.com>  Wed, 03 Jun 2026 12:00:00 +0200
 
-ugreen-dxp-leds-dkms (0.3-0) unstable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.0) unstable; urgency=medium
 
   * Previous manual packaging version
 

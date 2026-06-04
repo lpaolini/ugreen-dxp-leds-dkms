@@ -1,10 +1,13 @@
 Source: ugreen-dxp-leds-dkms
 Section: kernel
 Priority: optional
-Maintainer: Yuhao Zhou <miskcoo@gmail.com>
+Maintainer: Luca Paolini <lookap@gmail.com>
 Build-Depends: debhelper-compat (= 13), dh-dkms, dkms
 Standards-Version: 4.6.2
-Homepage: https://github.com/miskcoo/ugreen_leds_controller
+Rules-Requires-Root: no
+Homepage: https://github.com/lpaolini/ugreen-dxp-leds-dkms
+Vcs-Browser: https://github.com/lpaolini/ugreen-dxp-leds-dkms
+Vcs-Git: https://github.com/lpaolini/ugreen-dxp-leds-dkms.git
 
 Package: ugreen-dxp-leds-dkms
 Architecture: all
