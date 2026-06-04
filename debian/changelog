@@ -1,11 +1,11 @@
-ugreen-dxp-leds-dkms (0.3.8) unstable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.8) stable; urgency=medium
 
   * Run lintian with the Debian profile in the Ubuntu-based publishing
     workflow.
 
  -- Luca Paolini <lookap@gmail.com>  Thu, 04 Jun 2026 09:53:38 +0200
 
-ugreen-dxp-leds-dkms (0.3.7) unstable; urgency=medium
+ugreen-dxp-leds-dkms (0.3.7) stable; urgency=medium
 
   * Add Debian copyright metadata and package-maintainer VCS metadata.
   * Keep module autoload configuration as a dpkg-managed conffile.
