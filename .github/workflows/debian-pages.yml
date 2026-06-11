@@ -64,7 +64,7 @@ jobs:
       - name: Build APT repository
         env:
           APT_SIGNING_KEY: ${{ secrets.APT_SIGNING_KEY }}
-          APT_SIGNING_KEY_PASSPHRASE: ${{ secrets.APT_SIGNING_KEY_PASSPHRASE }}
+          APT_SIGNING_PASSPHRASE: ${{ secrets.APT_SIGNING_PASSPHRASE }}
         run: |
           set -eu
 
@@ -125,8 +125,8 @@ jobs:
           gpg --batch --armor --export "$signing_key" > "$repo_root/public.key"
 
           gpg_args=(--batch --yes --local-user "$signing_key")
-          if [ -n "${APT_SIGNING_KEY_PASSPHRASE:-}" ]; then
-            gpg_args+=(--pinentry-mode loopback --passphrase "$APT_SIGNING_KEY_PASSPHRASE")
+          if [ -n "${APT_SIGNING_PASSPHRASE:-}" ]; then
+            gpg_args+=(--pinentry-mode loopback --passphrase "$APT_SIGNING_PASSPHRASE")
           fi
 
           gpg "${gpg_args[@]}" --armor --detach-sign \
