@@ -7,7 +7,8 @@ they appear under `/sys/class/leds` and can use kernel LED triggers such as
 `netdev` and `oneshot`.
 
 This repository is based on a fork of
-[miskcoo/ugreen_leds_controller](https://github.com/miskcoo/ugreen_leds_controller).
+[miskcoo/ugreen_leds_controller](https://github.com/miskcoo/ugreen_leds_controller),
+[v0.3](https://github.com/miskcoo/ugreen_leds_controller/tree/v0.3).
 
 It has been intentionally reduced to only the `led-ugreen` DKMS kernel module
 and reorganized as a standard Debian package source tree.
@@ -97,3 +98,8 @@ dpkg-buildpackage -b -us -uc -tc
 
 The resulting `ugreen-dxp-leds-dkms_*.deb` package is written to the parent
 directory by `dpkg-buildpackage`.
+
+## Acknowledgments
+
+I wish to thank [Yuhao Zhou](https://github.com/miskcoo) for his cool project!
+
