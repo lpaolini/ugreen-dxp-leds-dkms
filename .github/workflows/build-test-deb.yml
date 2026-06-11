@@ -1,0 +1,57 @@
+name: Build test deb
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version, for example 0.3.1~test20260611"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Debian tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            debhelper \
+            dh-dkms \
+            dkms \
+            dpkg-dev \
+            fakeroot
+
+      - name: Set test package version
+        env:
+          PACKAGE_VERSION: ${{ inputs.version }}
+        run: |
+          set -eu
+
+          if ! dpkg --compare-versions "$PACKAGE_VERSION" gt 0; then
+            echo "Invalid Debian package version: $PACKAGE_VERSION" >&2
+            exit 1
+          fi
+
+          perl -0pi -e 's/\A(ugreen-dxp-leds-dkms \()[^)]*(\))/$1$ENV{PACKAGE_VERSION}$2/' debian/changelog
+          test "$(dpkg-parsechangelog -S Version)" = "$PACKAGE_VERSION"
+
+      - name: Build deb
+        run: |
+          dpkg-buildpackage -b -us -uc -tc
+          mkdir -p dist
+          mv ../ugreen-dxp-leds-dkms_*.deb dist/
+
+      - name: Upload deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ugreen-dxp-leds-dkms_${{ inputs.version }}_all
+          path: dist/*.deb
+          if-no-files-found: error
