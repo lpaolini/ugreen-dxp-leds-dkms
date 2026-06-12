@@ -73,7 +73,7 @@ jobs:
             exit 1
           fi
 
-          repo_root="$PWD/public/debian"
+          repo_root="$PWD/public"
           suite="stable"
           component="main"
           package_dir="$repo_root/pool/$component/u/ugreen-dxp-leds-dkms"
@@ -168,8 +168,8 @@ jobs:
               <h1>UGREEN DXP LED Kernel Module Debian Repository</h1>
               <p>Install the DKMS package from this GitHub Pages APT repository:</p>
               <pre><code>sudo install -d -m 0755 /etc/apt/keyrings
-          curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg
-          echo 'deb [signed-by=/etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
+          curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg
+          echo 'deb [signed-by=/etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg] https://lpaolini.github.io/ugreen-dxp-leds-dkms stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
           sudo apt update
           sudo apt install ugreen-dxp-leds-dkms</code></pre>
               <p>Or download the latest .deb package directly:</p>

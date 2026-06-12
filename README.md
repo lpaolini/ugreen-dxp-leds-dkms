@@ -39,9 +39,9 @@ Install from the Debian repository:
 ```sh
 sudo install -d -m 0755 /etc/apt/keyrings
 
-curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg
+curl -fsSL https://lpaolini.github.io/ugreen-dxp-leds-dkms/public.key | sudo gpg --dearmor -o /etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg
 
-echo 'deb [signed-by=/etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg] https://lpaolini.github.io/ugreen-dxp-leds-dkms/debian stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
+echo 'deb [signed-by=/etc/apt/keyrings/ugreen-dxp-leds-dkms.gpg] https://lpaolini.github.io/ugreen-dxp-leds-dkms stable main' | sudo tee /etc/apt/sources.list.d/ugreen-dxp-leds-dkms.list
 
 sudo apt update
 sudo apt install ugreen-dxp-leds-dkms
@@ -102,4 +102,3 @@ directory by `dpkg-buildpackage`.
 ## Acknowledgments
 
 I wish to thank [Yuhao Zhou](https://github.com/miskcoo) for his cool project!
-
